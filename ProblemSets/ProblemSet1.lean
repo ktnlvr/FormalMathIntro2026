@@ -46,8 +46,7 @@ for some real number `c ∈ ℝ`, then you have formalized that predicate *incor
 /-- **DESIGN EXERCISE:** Define a predicate on functions `f : ℝ → ℝ`, which says *"`f` is additive"*.
 The mathematical meaning should be: The equality `f(x+y) = f(x) + f(y)` holds for all `x` and `y`
 in the domain of definition of `f` (i.e., for all real numbers `x, y ∈ ℝ`). -/
-def IsAdditive (f : ℝ → ℝ) : Prop :=
-  sorry -- Replace this `sorry` with *your definition*.
+def IsAdditive (y : ℝ) (x: ℝ) (f : ℝ → ℝ) : Prop := f (x + y) = (f x + f y)
 
 end design_additivity_predicate
 
@@ -69,7 +68,8 @@ lemma isAdditive_neg_thirtyseven_mul_self :
 Show (using your definition of additivity), that the function `x ↦ x + 37` is not additive. -/
 lemma not_isAdditive_self_add_thirtyseven :
     ¬ IsAdditive (fun x ↦ x + 37) := by
-  sorry -- Replace this `sorry` with *your proof*.
+  by_contra
+  sorry
 
 /-- **EXERCISE 4:**
 Show (using your definition of additivity), that the absolute value function is not

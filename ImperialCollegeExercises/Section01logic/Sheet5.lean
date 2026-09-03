@@ -25,32 +25,51 @@ and also the following two new tactics:
 variable (P Q R S : Prop)
 
 example : P ↔ P := by
-  sorry
+  rfl
 
 example : (P ↔ Q) → (Q ↔ P) := by
-  sorry
+  intro ⟨p, q⟩
+  exact ⟨q, p⟩
 
 example : (P ↔ Q) ↔ (Q ↔ P) := by
-  sorry
+  constructor <;> intro thing <;> exact ⟨thing.2, thing.1⟩
 
 example : (P ↔ Q) → (Q ↔ R) → (P ↔ R) := by
-  sorry
-  -- The pattern `rw` then `assumption` is common enough that it can be abbreviated to `rwa`
+  intro PiffQ QiffP
+  constructor
+  exact QiffP.1 ∘ PiffQ.1
+  exact PiffQ.2 ∘ QiffP.2
 
 example : P ∧ Q ↔ Q ∧ P := by
-  sorry
+  constructor <;> intro h <;> exact ⟨h.2, h.1⟩
 
 example : (P ∧ Q) ∧ R ↔ P ∧ Q ∧ R := by
-  sorry
+  constructor
+  intro p
+  rw [and_assoc] at p
+  exact p
+  intro p
+  rw [← and_assoc] at p
+  exact p
 
 example : P ↔ P ∧ True := by
-  sorry
+  constructor
+  intro p
+  exact ⟨p, True.intro⟩
+  intro ⟨p, _⟩
+  exact p
 
 example : False ↔ P ∧ False := by
-  sorry
+  constructor
+  intro f
+  trivial
+  intro ⟨_, h⟩
+  exact h
 
 example : (P ↔ Q) → (R ↔ S) → (P ∧ R ↔ Q ∧ S) := by
-  sorry
+  intro h1 h2
+  -- oh my god this is a slog
+  grind
 
 example : ¬(P ↔ ¬P) := by
   sorry

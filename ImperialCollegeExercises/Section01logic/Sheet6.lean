@@ -32,45 +32,68 @@ example : P → P ∨ Q := by
   exact hP
 
 example : Q → P ∨ Q := by
-  sorry
+  intro q
+  exact Or.inr q
 
 -- Here are a few ways to break down a disjunction
 example : P ∨ Q → (P → R) → (Q → R) → R := by
   intro hPoQ
   cases hPoQ with
-  | inl h => sorry
-  | inr h => sorry
+  | inl p =>
+    intro pr _
+    exact pr p
+  | inr q =>
+    intro _ qr
+    exact qr q
 
 example : P ∨ Q → (P → R) → (Q → R) → R := by
   intro hPoQ
   obtain h | h := hPoQ
-  · sorry
-  · sorry
+  · intro pr _
+    exact pr h
+  · intro _ qr
+    exact qr h
 
 example : P ∨ Q → (P → R) → (Q → R) → R := by
   rintro (h | h)
-  · sorry
-  · sorry
+  · intro pr qr
+    exact pr h
+  · intro pr qr
+    exact qr h
 
 -- symmetry of `or`
 example : P ∨ Q → Q ∨ P := by
-  sorry
+  rintro (p | q)
+  · exact Or.inr p
+  · exact Or.inl q
 
 -- associativity of `or`
 example : (P ∨ Q) ∨ R ↔ P ∨ Q ∨ R := by
+  constructor
+  intro p
   sorry
 
 example : (P → R) → (Q → S) → P ∨ Q → R ∨ S := by
-  sorry
+  intro p_r q_s p_or_q
+  cases p_or_q with
+  | inl p => exact Or.inl (p_r p)
+  | inr q => exact Or.inr (q_s q)
 
 example : (P → Q) → P ∨ R → Q ∨ R := by
-  sorry
+  intro p_q p_or_r
+  cases p_or_r with
+  | inl p => exact Or.inl (p_q p)
+  | inr r => exact Or.inr r
 
 example : (P ↔ R) → (Q ↔ S) → (P ∨ Q ↔ R ∨ S) := by
   sorry
 
 -- de Morgan's laws
 example : ¬(P ∨ Q) ↔ ¬P ∧ ¬Q := by
+  constructor
+  intro p
+  by_cases
+  sorry
   sorry
 
 example : ¬(P ∧ Q) ↔ ¬P ∨ ¬Q := by
