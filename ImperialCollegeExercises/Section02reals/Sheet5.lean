@@ -63,7 +63,25 @@ theorem tendsTo_add {a b : ℕ → ℝ} {t u : ℝ} (ha : TendsTo a t) (hb : Ten
 tends to `t - u`. -/
 theorem tendsTo_sub {a b : ℕ → ℝ} {t u : ℝ} (ha : TendsTo a t) (hb : TendsTo b u) :
     TendsTo (fun n ↦ a n - b n) (t - u) := by
-  -- this one follows without too much trouble from earlier results.
-  sorry
+  apply tendsTo_neg at hb
+  have q := tendsTo_add ha hb
+  ring_nf at q
+  exact q
+  -- rw [tendsTo_def] at *
+  -- intro ε hε
+  -- specialize ha ε hε
+  -- specialize hb ε hε
+  -- rcases hb with ⟨bB, hbB⟩
+  -- rcases ha with ⟨aB, haB⟩
+  -- use max aB bB
+  -- intro n
+  -- specialize hbB n
+  -- specialize haB n
+  -- intro q
+  -- rw [max_le_iff] at q
+  -- have ⟨aB_le_n, bB_le_n⟩ := q
+  -- specialize haB aB_le_n
+  -- specialize hbB bB_le_n
+  -- have habB := add_lt_add_of_lt_of_lt haB hbB
 
 end Section2sheet5

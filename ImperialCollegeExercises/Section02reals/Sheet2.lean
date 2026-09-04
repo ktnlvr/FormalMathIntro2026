@@ -30,10 +30,18 @@ example : ∀ a b : ℝ, ∃ x, (a + b) ^ 3 = a ^ 3 + x * a ^ 2 * b + 3 * a * b 
   ring
 
 example : ∃ x : ℝ, ∀ y, y + y = x * y := by
-  sorry
+  use 2
+  intro y
+  ring
 
 example : ∀ x : ℝ, ∃ y, x + y = 2 := by
-  sorry
+  intro x
+  use -x + 2
+  ring
 
 example : ∀ x : ℝ, ∃ y, x + y ≠ 2 := by
-  sorry
+  intro x
+  use -x + 3
+  by_contra
+  ring_nf at this
+  norm_num at this

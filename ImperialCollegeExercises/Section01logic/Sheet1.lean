@@ -183,8 +183,12 @@ example : (P → Q) → ((P → Q) → P) → Q := by
   exact pq p
 
 example : ((P → Q) → R) → ((Q → R) → P) → ((R → P) → Q) → P := by
-  intro pq_r qr_p rp_q
-  grind
+  intro hPQR hQRP hRPQ
+  apply hQRP
+  intro q
+  apply hPQR
+  intro _
+  exact q
 
 example : ((Q → P) → P) → (Q → R) → (R → P) → P := by
   sorry
