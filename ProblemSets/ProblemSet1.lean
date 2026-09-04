@@ -46,7 +46,7 @@ for some real number `c ∈ ℝ`, then you have formalized that predicate *incor
 /-- **DESIGN EXERCISE:** Define a predicate on functions `f : ℝ → ℝ`, which says *"`f` is additive"*.
 The mathematical meaning should be: The equality `f(x+y) = f(x) + f(y)` holds for all `x` and `y`
 in the domain of definition of `f` (i.e., for all real numbers `x, y ∈ ℝ`). -/
-def IsAdditive (y : ℝ) (x: ℝ) (f : ℝ → ℝ) : Prop := f (x + y) = (f x + f y)
+def IsAdditive (f : ℝ → ℝ) : Prop := ∀ x, ∀ y, f (x + y) = (f x + f y)
 
 end design_additivity_predicate
 
@@ -56,34 +56,55 @@ section use_additivity_predicate
 Show (using your definition of additivity), that the constant function zero is additive. -/
 lemma isAdditive_zero :
     IsAdditive (fun _ ↦ 0) := by
-  sorry -- Replace this `sorry` with *your proof*.
+  unfold IsAdditive
+  intro x y
+  linarith
 
 /-- **EXERCISE 2:**
 Show (using your definition of additivity), that the function `x ↦ -37 * x` is additive. -/
 lemma isAdditive_neg_thirtyseven_mul_self :
     IsAdditive (fun x ↦ -37 * x) := by
-  sorry -- Replace this `sorry` with *your proof*.
+  unfold IsAdditive
+  intro x y
+  linarith
 
 /-- **EXERCISE 3:**
 Show (using your definition of additivity), that the function `x ↦ x + 37` is not additive. -/
 lemma not_isAdditive_self_add_thirtyseven :
     ¬ IsAdditive (fun x ↦ x + 37) := by
+  unfold IsAdditive
   by_contra
-  sorry
+  ring_nf at this
+  norm_num at this
 
 /-- **EXERCISE 4:**
 Show (using your definition of additivity), that the absolute value function is not
 additive. -/
 lemma not_isAdditive_abs :
     ¬ IsAdditive (fun x ↦ |x|) := by
-  sorry -- Replace this `sorry` with *your proof*.
+  unfold IsAdditive
+  by_contra
+  ring_nf at this
+  specialize this 1 (-1)
+  norm_num at this
 
 /-- **EXERCISE 5:**
 Show (using your definition of additivity), that if `f` is additive, then `f(0) = 0`. -/
 lemma apply_zero_eq_of_isAdditive
     (f : ℝ → ℝ) (f_additive : IsAdditive f) :
     f 0 = 0 := by
-  sorry -- Replace this `sorry` with *your proof*.
+  unfold IsAdditive at f_additive
+  -- oh i wish i knew how to prove this using some Monoidal properties
+  -- because this basically means that there is a neutral element (f)
+  -- and an associative addition in reals
+  --
+  -- f(x) = f(x + 0) = f(x) + f(0)
+  -- 0 = f(0)
+  have hf := f_additive 0 0
+  rw [zero_add] at hf
+  -- even at this point this looks like x^2 = x
+  -- which is one of the lemmas for being an identity element in the group
+  linarith
 
 /-- **EXERCISE 6:**
 Show (using your definition of additivity), that if `f` is additive, then
@@ -91,7 +112,8 @@ Show (using your definition of additivity), that if `f` is additive, then
 lemma apply_fortytwo_add_apply_neg_five_eq_of_isAdditive
     (f : ℝ → ℝ) (f_additive : IsAdditive f) :
     f 42 + f (-5) = f 37 := by
-  sorry -- Replace this `sorry` with *your proof*.
+    rw [← f_additive]
+    ring_nf
 
 /-- **EXERCISE 7:**
 Show (using your definition of additivity), that if `f` is additive then `f(n) = n * f(1)`
@@ -103,9 +125,13 @@ lemma apply_nat_eq_mul_apply_one_of_isAdditive
   -- you should only fill in the proofs of the base case and the induction step.
   induction n with
   | zero => -- Base case.
-    sorry -- Replace this `sorry` with *your proof* of the base case.
+    ring_nf
+    exact apply_zero_eq_of_isAdditive f f_additive
   | succ n hn => -- Induction step.
-    sorry -- Replace this `sorry` with *your proof* of the induction step.
+    push_cast   -- are we supposed to use this one?
+    ring_nf     -- is there a way to do linarith to both using <;>?
+    rw [f_additive, hn]
+    linarith
 
 /-- **EXERCISE 8:**
 Show (using your definition of additivity), that if `f` and `g` are additive, then also `f + g`
@@ -117,7 +143,13 @@ unfold this pointwise sum definition of the values of `f + g`. -/
 lemma isAdditive_add
     (f g : ℝ → ℝ) (f_additive : IsAdditive f) (g_additive : IsAdditive g) :
     IsAdditive (f + g) := by
-  sorry -- Replace this `sorry` with *your proof*.
+  unfold IsAdditive at *
+  intro x y
+  specialize f_additive x y
+  specialize g_additive x y
+  -- probably a better way of doing this exists
+  rw [Pi.add_apply, Pi.add_apply, Pi.add_apply, g_additive, f_additive]
+  linarith
 
 end use_additivity_predicate
 
