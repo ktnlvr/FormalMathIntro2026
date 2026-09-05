@@ -119,15 +119,15 @@ example {a : ℕ → ℝ} {t : ℝ} (ha : TendsTo a t) : TendsTo (fun n => -a n)
   intro ε hε
   specialize ha ε hε
   ring_nf
-  conv at ha =>
-    arg 1
-    ext B
-    intro n
-    arg 2
-    arg 1
-    rw [← abs_neg]
-    ring_nf
-  exact ha
+  obtain ⟨B, hB⟩ := ha
+  use B
+  intro n
+  specialize hB n
+  intro B_le_n
+  apply hB at B_le_n
+  rw [← abs_neg]
+  ring_nf
+  assumption
 
 -- Try this one. You don't know enough material to do it yet!
 -- Where do you get stuck? The problem is that I didn't teach you
